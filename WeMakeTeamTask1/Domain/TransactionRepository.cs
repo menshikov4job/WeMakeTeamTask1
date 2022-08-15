@@ -8,9 +8,9 @@ namespace WeMakeTeamTask1.Domain
 {
     internal class TransactionRepository
     {
-        private readonly AppDbContext context;
+        readonly AppDbContext _context;
 
-        internal TransactionRepository(AppDbContext context)
+        public TransactionRepository(AppDbContext context)
         {
             this.context = context;
         }
