@@ -8,13 +8,13 @@ using System.Windows.Input;
 namespace WeMakeTeamTask1.Domain
 {
     // Список доступных комманд
-    internal enum Commands { add, get, exit }
+    public enum Commands { add, get, exit }
 
-    internal static class CommandsExtention
+    public static class CommandsExtention
     {
-        internal static string Description(this Commands cmd)
+        public static string Description(this Commands cmd)
         {
-            // использовал extention, но можно было использовать [атрибут]
+            // Использовал extention, но можно было использовать [атрибут].
             switch (cmd)
             {
                 case Commands.add:

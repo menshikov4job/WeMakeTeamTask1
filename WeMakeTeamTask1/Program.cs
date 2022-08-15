@@ -6,7 +6,7 @@ using WeMakeTeamTask1.Utils;
 
 while (true)
 {
-    String inputtedCommand = InputCommand();
+    var inputtedCommand = InputCommand();
     // проверяем наличие введенной комманды (TryParse цифры преобразовывал в комманды!)
     if (Enum.IsDefined(typeof(Commands), inputtedCommand))
     {
@@ -36,8 +36,7 @@ while (true)
 string InputCommand()
 {
     Console.Write("Введите комманду:");
-    string? inputtedCommand = Console.ReadLine();
-    if (inputtedCommand == null) inputtedCommand = "";
+    string inputtedCommand = Console.ReadLine() ?? "";
     return inputtedCommand.ToLower();
 }
 
@@ -46,45 +45,46 @@ void ExecuteCommand(Commands cmd)
     switch (cmd)
     {
         case Commands.add:
-            Add();
+            AddTransaction();
             break;
         case Commands.get:
-            Get();
+            GetTransaction();
             break;
         default:
             throw new NotSupportedException($"Комманда {cmd} не поддерживается!");
     }
 }
 
-void Add()
+void AddTransaction()
 {
-    var transaction = InputFields.InputTransaction();
+    var transaction = InputData.InputTransaction();
+    // Новая конструкция using без скобок.
     using var context = new AppDbContext();
     var transactionRepository = new TransactionRepository(context);
     try
-    {
-        transactionRepository.InsertTransaction(transaction);
+    {        
+        transactionRepository.Insert(transaction);
     }
     catch (DbUpdateException ex)
     {
         if (ex.InnerException is SqliteException sqlException && sqlException.SqliteErrorCode == 19
             && sqlException.SqliteExtendedErrorCode == 1555)
         {
-            // можно было создать свой тип exception
-            throw new ApplicationException($"Транзакция с Id = {transaction.Id} уже существует!");
+            // Можно было создать свой тип exception.
+            throw new ApplicationException($"Транзакция с Id = {transaction.Id} уже существует!", ex);
         }
         else
             throw;
     }
 }
 
-void Get()
+void GetTransaction()
 {
-    int id = InputFields.Id();
+    var id = InputData.Id();
+    // Новая конструкция using без скобок.
     using var context = new AppDbContext();
     var transactionRepository = new TransactionRepository(context);
-    var transaction = transactionRepository.GetTransactionById(id);
-    string json = Json.CreateJson(transaction);
+    var transaction = transactionRepository.Get(id);
+    var json = Json.CreateJson(transaction);
     Console.WriteLine(json);
 }
-

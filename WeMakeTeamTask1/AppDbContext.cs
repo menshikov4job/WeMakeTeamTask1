@@ -12,23 +12,25 @@ namespace WeMakeTeamTask1
 {
     public class AppDbContext : DbContext
     {
-        static readonly DbContextOptions<AppDbContext> contextOptions;
+        static readonly DbContextOptions<AppDbContext> _contextOptions;
 
         public DbSet<Transaction> Transactions { get; set; } = null!;
 
         static AppDbContext()
         {
-            // открываем соединение зарание, что бы EF не закрываля его автоматом после каждого создания контекста
+            // Открываем соединение зарание (один раз), что бы EF не закрывал его автоматом после
+            // каждого освобождения контекста (после закрытия данные удаляются если Sqlite in memory).
             DbConnection connection = new SqliteConnection("Filename=:memory:");
+            //DbConnection connection = new SqliteConnection("Filename=transaction.db");
             connection.Open();
 
-            contextOptions = new DbContextOptionsBuilder<AppDbContext>()
+            _contextOptions = new DbContextOptionsBuilder<AppDbContext>()
              .UseSqlite(connection)
             .Options;
         }
 
         public AppDbContext()
-            : base(contextOptions)
+            : base(_contextOptions)
         {
             Database.EnsureCreated();
         }
