@@ -36,13 +36,15 @@ namespace WeMakeTeamTask1.Utils
         }
 
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {           
-            if (Utf8Parser.TryParse(reader.ValueSpan, out DateTime value, out _, _standartFormat))
-            {
-                return value;
-            }
+        {
+            // Не используется
+            throw new NotImplementedException("Парсинг строки в DateTime не реализован.");
+            //if (Utf8Parser.TryParse(reader.ValueSpan, out DateTime value, out _, _standartFormat))
+            //{
+            //    return value;
+            //}
 
-            throw new FormatException();
+            //throw new FormatException();
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
